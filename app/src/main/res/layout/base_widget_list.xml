@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/widget_toolbar"></include>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/SwipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.mrs.mrs.multisupportrecyclerview.recyclerview.WrapRecyclerView
+                android:id="@+id/recycleList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.mrs.mrs.multisupportrecyclerview.recyclerview.WrapRecyclerView>
+
+            <include
+                layout="@layout/base_widget_empty_layout"
+                android:visibility="gone"></include>
+        </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

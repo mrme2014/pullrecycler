@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toobar"
+    style="@style/ToolBarStyle">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="优雅实现 多布局条目 "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+</android.support.v7.widget.Toolbar>

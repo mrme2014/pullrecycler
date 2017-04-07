@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <!-- Toolbar样式 -->
+    <style name="ToolBarStyle" parent="Widget.AppCompat.Toolbar">
+        <!-- Toolbar背景颜色 -->
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <!-- Toolbar popup menu样式 -->
+        <item name="android:theme">@style/PopWindowStyle</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
+
+    <style name="PopWindowStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="overlapAnchor">false</item>
+    </style>
+</resources>
