@@ -1,10 +1,16 @@
-package com.mrs.mrs.multisupportrecyclerview.recyclerview.multisupport;
+package com.mrs.mrs.swiprecyclerview.recyclerview.multisupport;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.mrs.mrs.multisupportrecyclerview.R;
 
 import java.util.ArrayList;
 
@@ -55,22 +61,22 @@ public abstract class MultiTypeSupportAdapter<T> extends RecyclerView.Adapter<Vi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick(v,position);
+                onItemClick(v, position);
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onItemLongClick(v,position);
+                onItemLongClick(v, position);
                 return false;
             }
         });
         onBindNormalHolder(holder, mDatas.get(position), position);
     }
 
-    public abstract void onItemClick(View view,int pos);
+    public abstract void onItemClick(View view, int pos);
 
-    public abstract void onItemLongClick(View view,int pos);
+    public abstract void onItemLongClick(View view, int pos);
 
 
     public abstract void onBindNormalHolder(ViewHolder holder, T item, int position);

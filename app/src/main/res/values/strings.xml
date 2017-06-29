@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MultiSupportRecyclerView</string>
+    <string name="file_upload">文件上传</string>
 </resources>

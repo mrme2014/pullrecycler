@@ -1,19 +1,26 @@
-package com.mrs.mrs.multisupportrecyclerview.recyclerview;
+package com.mrs.mrs.swiprecyclerview.recyclerview;
 
-import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mrs.mrs.swiprecyclerview.recyclerview.multisupport.LookSpanSize;
+
 /**
  * Created by mrs on 2017/4/7.
+ * <p>
+ * <p>
+ * 添加多头部 尾部 加载更多适配器
+ * <p>
+ * <p>
+ * 配合WrapRecyclerView 使用
  */
 
 public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final static String TAG = "WrapRecyclerAdapter";
+    private final String TAG = this.getClass().toString();
     private View loadMoreView;
     private boolean loadMoreEnable = false;
     // 用来存放底部和头部View的集合  比Map要高效一些
@@ -28,18 +35,18 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private static int TYPE_LOAD_MORE = 3000000;
 
-    private Context context;
     // 列表的Adapter
     private RecyclerView.Adapter mAdapter;
+    private LookSpanSize lookSpan;
 
-    public WrapRecyclerAdapter(View loadMoreView, RecyclerView.Adapter adapter) {
+    public WrapRecyclerAdapter(RecyclerView.Adapter adapter, View loadMoreView, LookSpanSize lookSpan) {
         this.loadMoreView = loadMoreView;
         this.mAdapter = adapter;
+        this.lookSpan = lookSpan;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         // viewType 可能就是 SparseArray 的key
         if (isHeaderViewType(viewType)) {
             View headerView = mHeaderViews.get(viewType);
@@ -48,7 +55,6 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if (isFooterViewType(viewType)) {
             View footerView = mFooterViews.get(viewType);
-            Log.e("onCreateViewHolder", viewType + "");
             return createHeaderFooterViewHolder(footerView);
         }
         if (loadMoreEnable && viewType == TYPE_LOAD_MORE) {
@@ -59,9 +65,14 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (isHeaderPosition(position) || isFooterPosition(position) || (loadMoreEnable&&position == getItemCount() - 1)) {
+        if (isHeaderPosition(position) || isFooterPosition(position) || (loadMoreEnable && position == getItemCount() - 1)) {
+            if (holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+                params.setFullSpan(true);
+            }
             return;
         }
+
         // 计算一下位置
         position = position - mHeaderViews.size();
         mAdapter.onBindViewHolder(holder, position);
@@ -69,6 +80,10 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
+        if (loadMoreEnable && position == getItemCount() - 1) {
+            return TYPE_LOAD_MORE;
+        }
+
         if (isHeaderPosition(position)) {
             // 直接返回position位置的key
             return mHeaderViews.keyAt(position);
@@ -78,51 +93,36 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             position = position - mHeaderViews.size() - mAdapter.getItemCount();
             return mFooterViews.keyAt(position);
         }
-        if (loadMoreEnable && position == getItemCount() - 1) {
-            return TYPE_LOAD_MORE;
-        }
+
         // 返回列表Adapter的getItemViewType
         position = position - mHeaderViews.size();
 
         return mAdapter.getItemViewType(position);
     }
 
-    /**
-     * 是不是底部类型
-     */
     private boolean isFooterViewType(int viewType) {
         int position = mFooterViews.indexOfKey(viewType);
         return position >= 0;
     }
 
-    /**
-     * 创建头部或者底部的ViewHolder
-     */
+
     private RecyclerView.ViewHolder createHeaderFooterViewHolder(View view) {
         return new RecyclerView.ViewHolder(view) {
 
         };
     }
 
-    /**
-     * 是不是头部类型
-     */
     private boolean isHeaderViewType(int viewType) {
         int position = mHeaderViews.indexOfKey(viewType);
         return position >= 0;
     }
 
-    /**
-     * 是不是底部位置
-     */
+
     private boolean isFooterPosition(int position) {
-        return position >= (mHeaderViews.size() + mAdapter.getItemCount())
-                + (loadMoreEnable ? 1 : 0);
+        return position >= (mHeaderViews.size() + mAdapter.getItemCount());
+        // + (loadMoreEnable ? 1 : 0);
     }
 
-    /**
-     * 是不是头部位置
-     */
     private boolean isHeaderPosition(int position) {
         return position < mHeaderViews.size();
     }
@@ -130,16 +130,8 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemCount() {
         // 条数三者相加 = 底部条数 + 头部条数 + Adapter的条数
-        int count = mAdapter.getItemCount() + mHeaderViews.size() + mFooterViews.size();
-        Log.e("getItemCount", count + "");
+        int count = mAdapter.getItemCount() + mHeaderViews.size() + mFooterViews.size() + (loadMoreEnable ? 1 : 0);
         return count;
-    }
-
-    /**
-     * 获取列表的Adapter
-     */
-    private RecyclerView.Adapter getAdapter() {
-        return mAdapter;
     }
 
     // 添加头部
@@ -151,14 +143,21 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
+    public SparseArray<View> getHeaderViews() {
+        return mHeaderViews;
+    }
+
+    public SparseArray<View> getFooterViews() {
+        return mFooterViews;
+    }
+
     // 添加底部
     public void addFooterView(View view) {
         int position = mFooterViews.indexOfValue(view);
-        if (position < 0) {//BASE_ITEM_TYPE_FOOTER++
-            mFooterViews.put(mFooterViews.size(), view);
+        if (position < 0) {
+            mFooterViews.put(BASE_ITEM_TYPE_FOOTER++, view);
         }
-        notifyItemInserted(getItemCount() - 1);
-        notifyDataSetChanged();
+        notifyItemInserted(getItemCount());
     }
 
     // 移除头部
@@ -177,31 +176,46 @@ public class WrapRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {   //  1   2
+            final GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    boolean isHeaderOrFooter = isHeaderPosition(position)
+                            || isFooterPosition(position)
+                            || (loadMoreEnable && position == getItemCount() - 1);
+                    return isHeaderOrFooter ? layoutManager.getSpanCount() : (lookSpan == null ? 1 : lookSpan.getSpanSize(position));
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+        if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+            p.setFullSpan(holder.getLayoutPosition() == 0);
+        }
+    }
+
+    public void setLookSpan(LookSpanSize lookSpan) {
+        this.lookSpan = lookSpan;
+        notifyDataSetChanged();
+    }
+
     public void setLoadMoreView(View view) {
         this.loadMoreView = view;
     }
 
-    public void setShowLoadMore(boolean loadMoreEnable) {
+    public void setLoadMoreEnable(boolean loadMoreEnable) {
         this.loadMoreEnable = loadMoreEnable;
-       // notifyDataSetChanged();
-    }
-
-    /**
-     * 解决GridLayoutManager添加头部和底部不占用一行的问题
-     *
-     * @param recycler
-     */
-    public void adjustSpanSize(RecyclerView recycler) {
-        if (recycler.getLayoutManager() instanceof GridLayoutManager) {
-            final GridLayoutManager layoutManager = (GridLayoutManager) recycler.getLayoutManager();
-            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    boolean isHeaderOrFooter =
-                            isHeaderPosition(position) || isFooterPosition(position);
-                    return isHeaderOrFooter ? layoutManager.getSpanCount() : 1;
-                }
-            });
-        }
+        //notifyDataSetChanged();
+        //外面手动调用notifyDataSetChanged
     }
 }

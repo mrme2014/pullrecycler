@@ -1,4 +1,4 @@
-package com.mrs.mrs.multisupportrecyclerview.recyclerview.multisupport;
+package com.mrs.mrs.swiprecyclerview.recyclerview.multisupport;
 
 /**
  * Created by mrs on 2017/4/7.
