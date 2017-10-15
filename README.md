@@ -7,7 +7,7 @@
 - 配合[itemtouchhelper]:https://github.com/mrme2014/ItemTouchHelper
   来实现非侵入式侧滑菜单，长按拖拽
 # 使用方式
-dependence{
+dependencies{
 
         compile 'com.qiaomu:libmultirecyclerview:1.0.2'
 
