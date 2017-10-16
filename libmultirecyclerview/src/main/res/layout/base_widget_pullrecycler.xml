@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/SwipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.qiaomu.libmultirecyclerview.WrapRecyclerView
+            android:id="@+id/recycleList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.qiaomu.libmultirecyclerview.WrapRecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    <com.qiaomu.libmultirecyclerview.LoadFrameLayout
+        android:id="@+id/loadFramLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        app:emptyView="@layout/base_widget_empty_layout"
+        app:errorView="@layout/base_widget_empty_layout"
+        app:loadingView="@layout/base_widget_empty_layout">
+
+
+    </com.qiaomu.libmultirecyclerview.LoadFrameLayout>
+</merge>
