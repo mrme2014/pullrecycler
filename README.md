@@ -8,7 +8,7 @@
   来实现非侵入式侧滑菜单，长按拖拽
 - IM消息列表软键盘弹起时消息的定位（看QQ软键盘弹起）
 - 列表滚动动画
-
+- 统一LinearLayoutManager,GridLayoutManager,StaggeredGridLayoutManager常用api
 # 运行截图
 gif录制效果比较渣,录出来竟然花屏了
 
