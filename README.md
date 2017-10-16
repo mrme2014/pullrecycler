@@ -6,7 +6,9 @@
 - 优雅的实现多条目类型列表
 - 配合[itemtouchhelper]:https://github.com/mrme2014/ItemTouchHelper
   来实现非侵入式侧滑菜单，长按拖拽
-  
+- IM消息列表软键盘弹起时消息的定位（看QQ软键盘弹起）
+- 列表滚动动画
+
 # 运行截图
 gif录制效果比较渣,录出来竟然花屏了
 
