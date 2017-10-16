@@ -14,6 +14,4 @@ dependencies{
 }
 ```
 # 运行截图
-![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/1.png)
-
-![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/2.png)
+![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/3.png)
