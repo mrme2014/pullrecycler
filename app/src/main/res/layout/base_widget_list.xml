@@ -6,10 +6,10 @@
 
     <include layout="@layout/widget_toolbar"></include>
 
-    <com.mrs.mrs.swiprecyclerview.recyclerview.PullRecycler
+    <com.qiaomu.libmultirecyclerview.PullRecycler
         android:id="@+id/PullRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.mrs.mrs.swiprecyclerview.recyclerview.PullRecycler>
+    </com.qiaomu.libmultirecyclerview.PullRecycler>
 </LinearLayout>

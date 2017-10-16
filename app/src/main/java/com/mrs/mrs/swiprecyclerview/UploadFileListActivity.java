@@ -7,10 +7,9 @@ import com.mrs.mrs.multisupportrecyclerview.R;
 import com.mrs.mrs.swiprecyclerview.bean.FileEntiy;
 import com.mrs.mrs.swiprecyclerview.okhttp.MultiProRequestBody;
 import com.mrs.mrs.swiprecyclerview.okhttp.ProgressRequestBody;
-import com.mrs.mrs.swiprecyclerview.recyclerview.ProcessImageView;
-import com.mrs.mrs.swiprecyclerview.recyclerview.multisupport.ViewHolder;
+import com.mrs.mrs.swiprecyclerview.widget.ProcessImageView;
+import com.qiaomu.libmultirecyclerview.multisupport.ViewHolder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +20,6 @@ import okhttp3.Interceptor;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -32,8 +30,8 @@ public class UploadFileListActivity extends BaseListActivity<FileEntiy> {
     String url = "http://jchapi.huored.net/client/service.json?authedUserId=8201606224095767&loginKey=JCZJ_LOGIN20170519103528&service=USER_LOGO_EDIT&sign=9e4792cdc4d2286be3fb556a46bb8cc3";
     ArrayList<FileEntiy> picPaths = new ArrayList<>();
     public static String[] pics = new String[]{
-            "storage/emulated/0/download/1.gif",
-            "storage/emulated/0/download/2.gif",
+            "storage/emulated/0/download/header_1.gif",
+            "storage/emulated/0/download/header_2.gif",
             "storage/emulated/0/download/3.gif",
             "storage/emulated/0/download/4.gif",
             "storage/emulated/0/download/5.gif",
@@ -69,8 +67,8 @@ public class UploadFileListActivity extends BaseListActivity<FileEntiy> {
                     .newBuilder()
                     .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
                     .addHeader("appName", "jczj-android")
-                    .addHeader("appVersion", "1.1.8")
-                    .addHeader("appUserAgent", "1")
+                    .addHeader("appVersion", "header_1.header_1.8")
+                    .addHeader("appUserAgent", "header_1")
                     .build();
             return chain.proceed(request);
         }
@@ -104,7 +102,7 @@ public class UploadFileListActivity extends BaseListActivity<FileEntiy> {
         ProcessImageView piv = holder.getView(R.id.proimg);
         Log.e("onBindHolder: ", item.progress + "--");
         piv.setProgress(item.progress);
-        holder.setImageByUrl(this, R.id.proimg, item.path);
+       // holder.setImageByUrl(this, R.id.proimg, item.path);
     }
 
     @Override
@@ -119,8 +117,8 @@ public class UploadFileListActivity extends BaseListActivity<FileEntiy> {
 //        File file1 = new File(pic1);
 //
 //        RequestBody requestBody = new ProgressRequestBody(file, 0, new ProgressListener());
-//        RequestBody requestBody1 = new ProgressRequestBody(file1, 1, new ProgressListener());
-//        RequestBody requestBody2 = new ProgressRequestBody(file, 2, new ProgressListener());
+//        RequestBody requestBody1 = new ProgressRequestBody(file1, header_1, new ProgressListener());
+//        RequestBody requestBody2 = new ProgressRequestBody(file, header_2, new ProgressListener());
 //        RequestBody requestBody3 = new ProgressRequestBody(file1, 3, new ProgressListener());
 //        MultipartBody body = new MultipartBody.Builder()
 //                .setType(MultipartBody.FORM)

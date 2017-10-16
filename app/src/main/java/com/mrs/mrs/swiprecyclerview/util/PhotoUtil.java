@@ -73,7 +73,7 @@ public class PhotoUtil {
                 case CROP_IMAGE:
                     //如果文件不存在
                     if (tempCropPath == null || "".equals(tempCropPath) || !new File(tempCropPath).exists()) {
-                        Log.e("onActivityResult: ", "file not exists 1");
+                        Log.e("onActivityResult: ", "file not exists header_1");
                         //开始上传
                     } else if (listenter != null) {
                         listenter.upload();
@@ -85,7 +85,7 @@ public class PhotoUtil {
                         if (file.exists())
                             cropImage(activity, Uri.fromFile(file), tempCropPath);
                         else {
-                            Log.e("onActivityResult: ", "file not exists 2");
+                            Log.e("onActivityResult: ", "file not exists header_2");
                         }
                     } else {
                         Log.e("onActivityResult: ", "file not exists 3");

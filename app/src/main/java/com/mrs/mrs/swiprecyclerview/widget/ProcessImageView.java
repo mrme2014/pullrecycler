@@ -1,4 +1,4 @@
-package com.mrs.mrs.swiprecyclerview.recyclerview;
+package com.mrs.mrs.swiprecyclerview.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

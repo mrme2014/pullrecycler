@@ -5,7 +5,7 @@ package com.mrs.mrs.swiprecyclerview.okhttp;
  * <p>
  * Copyright 2015 ZhangQu Li
  * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version header_2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p/>
@@ -19,7 +19,7 @@ package com.mrs.mrs.swiprecyclerview.okhttp;
  * <p>
  * Copyright 2015 ZhangQu Li
  * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version header_2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p/>
@@ -35,7 +35,7 @@ package com.mrs.mrs.swiprecyclerview.okhttp;
 /**
  * Copyright 2015 ZhangQu Li
  * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version header_2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p/>
@@ -133,9 +133,9 @@ public class MultiProRequestBody extends ResponseBody {
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
-                //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
+                //增加当前读取的字节数，如果读取完成了bytesRead会返回-header_1
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                //回调，如果contentLength()不知道长度，会返回-1
+                //回调，如果contentLength()不知道长度，会返回-header_1
                 if (progressListener != null) {
                     progressListener.onProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
                 }

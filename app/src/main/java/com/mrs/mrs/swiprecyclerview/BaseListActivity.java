@@ -16,15 +16,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mrs.mrs.multisupportrecyclerview.R;
-import com.mrs.mrs.swiprecyclerview.recyclerview.Conf;
-import com.mrs.mrs.swiprecyclerview.recyclerview.PullRecycler;
-import com.mrs.mrs.swiprecyclerview.recyclerview.WrapRecyclerAdapter;
-import com.mrs.mrs.swiprecyclerview.recyclerview.WrapRecyclerView;
-import com.mrs.mrs.swiprecyclerview.recyclerview.ilayoutmanager.MyLinearLayoutManager;
-import com.mrs.mrs.swiprecyclerview.recyclerview.multisupport.MultiTypeSupport;
-import com.mrs.mrs.swiprecyclerview.recyclerview.multisupport.MultiTypeSupportAdapter;
-import com.mrs.mrs.swiprecyclerview.recyclerview.multisupport.ViewHolder;
-import com.mrs.mrs.swiprecyclerview.recyclerview.onRefreshListener;
+import com.qiaomu.libmultirecyclerview.Conf;
+import com.qiaomu.libmultirecyclerview.PullRecycler;
+import com.qiaomu.libmultirecyclerview.WrapRecyclerView;
+import com.qiaomu.libmultirecyclerview.ilayoutmanager.MyLinearLayoutManager;
+import com.qiaomu.libmultirecyclerview.multisupport.MultiTypeSupport;
+import com.qiaomu.libmultirecyclerview.multisupport.MultiTypeSupportAdapter;
+import com.qiaomu.libmultirecyclerview.multisupport.ViewHolder;
+import com.qiaomu.libmultirecyclerview.onRefreshListener;
 
 import java.util.ArrayList;
 
@@ -60,7 +59,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
      * .setImageUrl(android.R.id.imageview2, JavaBean.picUrl2);
      * }
      * @Override public void onRefresh() {
-     * mCurPage = 1;
+     * mCurPage = header_1;
      * loadCompleted(getDatas(true));
      * }
      * @Override public void onLoadMore() {
@@ -68,13 +67,13 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
      * }
      * @see WrapRecyclerView#setAdapter(RecyclerView.Adapter)
      * @see android.widget.ListView#addHeaderView(View, Object, boolean)
-     * @see WrapRecyclerAdapter
+     * @see WrapRecyclerView
      * <p>
      * <p>
-     * 1.实现列表单布局  请复写
+     * header_1.实现列表单布局  请复写
      * @see BaseListActivity#getItemLayoutRes()
      * <p>
-     * 2.实现多条目布局，同样支持,请复写
+     * header_2.实现多条目布局，同样支持,请复写
      * @see BaseListActivity#getSupportMultiType()
      * <p>
      * 3.默认一页加载数量是20
@@ -192,11 +191,10 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
             }
         } else {
             //加载更多
-            //mPullRecycler.setLoadMoreEnable(false);
+            mPullRecycler.setEnableLoadMore(false);
         }
-
-        mPullRecycler.setRefreshing(false);
-        mPullRecycler.setOnRefreshFaield();
+        mPullRecycler.setOnRefreshCompeleted();
+        mPullRecycler.showLoadOverView();
     }
 
     public void loadCompleted(ArrayList<T> list) {
@@ -206,6 +204,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
         //刷新
         if (mCurPage == 2) {
             mDatas.clear();
+            mPullRecycler.removeLoadOverView();
             //空数据
             if (list == null || list.size() == 0) {
                 //设置空白页面
@@ -229,7 +228,6 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
                 mPullRecycler.setEnableLoadMore(true);
             }
         }
-        mPullRecycler.setRefreshing(false);
         mPullRecycler.setOnRefreshCompeleted();
     }
 
@@ -254,18 +252,6 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
             onBindHolder(holder, item, position);
         }
 
-        @Override
-        public void onViewDetachedFromWindow(ViewHolder holder) {
-            super.onViewDetachedFromWindow(holder);
-
-            Log.e("onViewFromWindow: ", holder.itemView.getClass().toString());
-        }
-
-        @Override
-        public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-            super.onDetachedFromRecyclerView(recyclerView);
-            Log.e("onRecyclerView: ", "onRecyclerView");
-        }
     }
 
     //如果 是单一条目 那么复写这个方法 设置条目  layout
