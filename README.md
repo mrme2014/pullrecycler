@@ -10,7 +10,7 @@
 ```java
 dependencies{
 
-        compile 'com.qiaomu:libmultirecyclerview:1.0.3'
+        compile 'com.qiaomu.library:multirecyclerview:1.0.3'
 }
 ```
 # 运行截图
