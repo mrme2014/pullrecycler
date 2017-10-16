@@ -8,7 +8,7 @@
   来实现非侵入式侧滑菜单，长按拖拽
   
 # 运行截图
-![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/3.gif)
+![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/gif.gif)
 
 # 添加依赖
 ```java
