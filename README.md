@@ -9,6 +9,7 @@
   
 # 运行截图
 gif录制效果比较渣
+
 ![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/gif.gif)
 
 # 添加依赖
