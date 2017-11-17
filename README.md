@@ -18,7 +18,7 @@ gif录制效果比较渣,录出来竟然花屏了
 ```java
 dependencies{
 
-       compile 'com.qiaomu.library:multirecyclerview:1.0.4'
+       compile 'com.qiaomu.library:pullrecycler:1.0.5'
 }
 
 ```
