@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 
 ext{
     PUBLISH_GROUP_ID = 'com.qiaomu.library'
-    PUBLISH_ARTIFACT_ID = 'multirecyclerview'
-    PUBLISH_VERSION = '1.0.3'
+    PUBLISH_ARTIFACT_ID = 'pullrecycler'
+    PUBLISH_VERSION = '1.0.5'
 }
 
 android {

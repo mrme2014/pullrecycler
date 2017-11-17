@@ -6,6 +6,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mrs.mrs.multisupportrecyclerview.R;
@@ -25,7 +26,8 @@ public class PullRecylerListActivity extends BaseListActivity<PullRecylerListAct
 
         addHeaderView(LayoutInflater.from(this).inflate(R.layout.header, mPullRecycler, false));
         View header = LayoutInflater.from(this).inflate(R.layout.header, mPullRecycler, false);
-        ((ImageView) header).setImageResource(R.mipmap.header_2);
+        header.setBackgroundColor(Color.BLUE);
+        ((TextView) header).setText("这里是第二个Header....");
         addHeaderView(header);
         //支持侧滑自动关闭已打开的
         mPullRecycler.getRecyclerView().setSupportSwipDiMiss(true);
@@ -152,8 +154,11 @@ public class PullRecylerListActivity extends BaseListActivity<PullRecylerListAct
             mCurPage = 1;
             getDatas(true);
             //loadCompleted(list);
-        } else
+        } else {
+            mPullRecycler.removeLoadOverView();
             getDatas(false);
+        }
+
     }
 
 

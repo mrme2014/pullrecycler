@@ -77,17 +77,11 @@ public class PullRecycler extends FrameLayout implements SwipeRefreshLayout.OnRe
                 R.color.google_red,
                 R.color.google_yellow);
 
-        refreshLayout.setNestedScrollingEnabled(false);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING || newState == RecyclerView.SCROLL_STATE_SETTLING)
-                    refreshLayout.setEnabled(false);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (mEnableRefresh && getFirstVisibleItemPosition() <= 0) {
-                        setEnableRefresh(true);
-                    }
                     if (finalTomove) {
                         finalTomove = false;
                         scrollPosition2TopIfPossible(positionToTop, smoothMove);
@@ -147,8 +141,10 @@ public class PullRecycler extends FrameLayout implements SwipeRefreshLayout.OnRe
     }
 
     public void setOnRefreshCompeleted() {
-        if (isRefreshing())
+        if (isRefreshing()) {
             refreshLayout.setRefreshing(false);
+            recyclerView.setRefreshing(false);
+        }
         recyclerView.setOnLoadCompleted();
     }
 
@@ -192,8 +188,11 @@ public class PullRecycler extends FrameLayout implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-        if (listener != null)
+        if (listener != null && !recyclerView.isLoadingMore()) {
             listener.onRefresh(true);
+            recyclerView.setRefreshing(true);
+        }
+
     }
 
     public void setOnRefreshListener(onRefreshListener listener) {
@@ -201,20 +200,24 @@ public class PullRecycler extends FrameLayout implements SwipeRefreshLayout.OnRe
         recyclerView.setOnLoadMoreListener(listener);
     }
 
-    public void setPostRefresh() {
+    //不自动执行onrefresh的回调
+    public void setRefreshing() {
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 refreshLayout.setRefreshing(true);
+                recyclerView.setRefreshing(true);
             }
         });
     }
 
-    public void setRefresh() {
+    //自动执行onrefresh的回调
+    public void setAutoRefresh() {
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 refreshLayout.setRefreshing(true);
+                recyclerView.setRefreshing(true);
                 onRefresh();
             }
         });

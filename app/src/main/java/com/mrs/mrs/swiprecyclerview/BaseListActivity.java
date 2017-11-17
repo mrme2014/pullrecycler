@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,7 +111,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
         mAdapter = new ListAdapter(this, mDatas, getItemLayoutRes(), getSupportMultiType());
         mPullRecycler.setAdapter(mAdapter);
         mPullRecycler.setOnRefreshListener(this);
-        mPullRecycler.setRefresh();
+        mPullRecycler.setAutoRefresh();
 
     }
 
@@ -191,7 +190,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
             }
         } else {
             //加载更多
-            mPullRecycler.setEnableLoadMore(false);
+           // mPullRecycler.setEnableLoadMore(false);
         }
         mPullRecycler.setOnRefreshCompeleted();
         mPullRecycler.showLoadOverView();
@@ -200,7 +199,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
     public void loadCompleted(ArrayList<T> list) {
         mCurPage++;
         mPullRecycler.showContentView();
-
+        mPullRecycler.removeLoadOverView();
         //刷新
         if (mCurPage == 2) {
             mDatas.clear();

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,7 +41,8 @@ public class WrapRecyclerView extends RecyclerView {
     private float MILLISECONDS_PER_INCH = getResources().getDisplayMetrics().density * 0.3f;
     private LinearSmoothScroller linearSmoothScroller;
     private float touchX, touchY;
-
+    private boolean mIsRefreshing;
+    private int mNewState;
 
     public WrapRecyclerView(Context context) {
         this(context, null);
@@ -57,9 +59,11 @@ public class WrapRecyclerView extends RecyclerView {
         addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                mNewState = newState;
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == SCROLL_STATE_IDLE) {
-                    if (isLoadingMore || !loadMoreEnable || listener == null)
+                    //正在刷新或者 正在加载 或者不支持上拉加载更多  或者没设置回调 直接return
+                    if (mIsRefreshing || isLoadingMore || !loadMoreEnable || listener == null)
                         return;
                     int lastPos = getLastVisibleItemPosition();
                     loadMoreIfNeeded(lastPos);
@@ -74,11 +78,26 @@ public class WrapRecyclerView extends RecyclerView {
         this.enableSwipDimiss = enableSwipDimiss;
     }
 
+    float x, y;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN)
-            stopScroll();
-        return super.dispatchTouchEvent(ev);
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x = ev.getX();
+                y = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.e("dispatchTouchEvent: ", Math.abs(ev.getX() - x) + "--" + Math.abs(ev.getY() - y));
+                if (Math.abs(ev.getX() - x) > Math.abs(ev.getY() - y)) {
+                    stopScroll();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+
+
+        return  super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -132,6 +151,7 @@ public class WrapRecyclerView extends RecyclerView {
         if (lastPos != itemCount - 1) {
             return;
         }
+        isLoadingMore = true;
         listener.onRefresh(false);
     }
 
@@ -205,6 +225,10 @@ public class WrapRecyclerView extends RecyclerView {
         return this.loadMoreEnable;
     }
 
+    public boolean isLoadingMore() {
+        return this.isLoadingMore;
+    }
+
     public void setLoadMoreView(View loadMoreView) {
         this.loadMoreView = loadMoreView;
         if (mWrapRecyclerAdapter != null) {
@@ -228,6 +252,7 @@ public class WrapRecyclerView extends RecyclerView {
             if (loadMoreEnable) {
                 mWrapRecyclerAdapter.notifyItemRemoved(mWrapRecyclerAdapter.getItemCount() - 1);
             } else {
+                // mWrapRecyclerAdapter.notifyItemRemoved(mWrapRecyclerAdapter.getItemCount() - 1);
                 mWrapRecyclerAdapter.notifyDataSetChanged();
             }
         } else
@@ -343,5 +368,9 @@ public class WrapRecyclerView extends RecyclerView {
 
         linearSmoothScroller.setTargetPosition(position);
         iLayoutmanager.getLayoutManager().startSmoothScroll(linearSmoothScroller);
+    }
+
+    public void setRefreshing(boolean isRefreshing) {
+        mIsRefreshing = isRefreshing;
     }
 }
