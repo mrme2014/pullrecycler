@@ -6,17 +6,19 @@
 - 优雅的实现多条目类型列表
 - 配合[itemtouchhelper]:https://github.com/mrme2014/ItemTouchHelper
   来实现非侵入式侧滑菜单，长按拖拽
-  
+- IM消息列表软键盘弹起时消息的定位（看QQ软键盘弹起）
+- 列表滚动动画
+- 统一LinearLayoutManager,GridLayoutManager,StaggeredGridLayoutManager常用api
 # 运行截图
-gif录制效果比较渣
+gif录制效果比较渣,录出来竟然花屏了
 
-![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/gif.gif)
+![image](https://github.com/mrme2014/MultiSupportRecyclerView/raw/master/art/gif1.gif)
 
 # 添加依赖
 ```java
 dependencies{
 
-        compile 'com.qiaomu.library:multirecyclerview:1.0.3'
+       compile 'com.qiaomu.library:pullrecycler:1.0.5'
 }
 
 ```
