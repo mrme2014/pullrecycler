@@ -2,12 +2,14 @@ package com.qiaomu.libmultirecyclerview;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,9 +41,12 @@ public class WrapRecyclerView extends RecyclerView {
     private ILayoutManager iLayoutmanager;
     private float MILLISECONDS_PER_INCH = getResources().getDisplayMetrics().density * 0.3f;
     private LinearSmoothScroller linearSmoothScroller;
-    private float touchX, touchY;
+
     private boolean mIsRefreshing;
     private int mNewState;
+    private Rect mTouchFrame;
+    private View dispatchView;
+    private boolean consumeTouchEvent;
 
     public WrapRecyclerView(Context context) {
         this(context, null);
@@ -69,7 +74,6 @@ public class WrapRecyclerView extends RecyclerView {
                 }
             }
         });
-
     }
 
     /*设置支持 侧滑删除 否则不会自动关闭打开的条目*/
@@ -77,26 +81,37 @@ public class WrapRecyclerView extends RecyclerView {
         this.enableSwipeDismiss = enableSwipeDismiss;
     }
 
+    private float interceptX, interceptY;
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!enableSwipeDismiss)
-            return super.onInterceptTouchEvent(ev);
+            return super.dispatchTouchEvent(ev);
 
-        boolean intercept;
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 closeMenuIfNeeded();
-                touchX = ev.getX();
-                touchY = ev.getY();
+                interceptX = ev.getX();
+                interceptY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                intercept = Math.abs(ev.getY() - touchY) > Math.abs(ev.getX() - touchX);
-                return intercept;
+                consumeTouchEvent = Math.abs(ev.getY() - interceptY) > Math.abs(ev.getX() - interceptX);
+                interceptX = ev.getX();
+                interceptY = ev.getY();
+                iLayoutmanager.setCanScrollVertically(consumeTouchEvent);
+                if (!consumeTouchEvent) {
+                    dispatchView = getChildAt(pointToPosition((int) ev.getX(), (int) ev.getY()));
+                }
+            case MotionEvent.ACTION_UP:
+                consumeTouchEvent = false;
+                dispatchView = null;
+                break;
         }
-        return super.onInterceptTouchEvent(ev);
+        if (consumeTouchEvent && dispatchView != null) {
+            dispatchView.dispatchTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
     }
-
 
     private void closeMenuIfNeeded() {
         int count = getChildCount();
@@ -104,14 +119,32 @@ public class WrapRecyclerView extends RecyclerView {
             View childAt = getChildAt(i);
             if (childAt instanceof DragLinearLayout) {
                 DragLinearLayout dragMenu = (DragLinearLayout) childAt;
-                if (dragMenu.isOpen()) {
+                if (dragMenu.isOpenOrFling()) {
                     dragMenu.close();
-                    break;
                 }
             }
         }
     }
 
+    private int pointToPosition(int x, int y) {
+        Rect frame = mTouchFrame;
+        if (frame == null) {
+            mTouchFrame = new Rect();
+            frame = mTouchFrame;
+        }
+
+        final int count = getChildCount();
+        for (int i = count - 1; i >= 0; i--) {
+            final View child = getChildAt(i);
+            if (child.getVisibility() == View.VISIBLE) {
+                child.getHitRect(frame);
+                if (frame.contains(x, y)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
     public void setMyLayoutManager(ILayoutManager manager) {
         this.iLayoutmanager = manager;

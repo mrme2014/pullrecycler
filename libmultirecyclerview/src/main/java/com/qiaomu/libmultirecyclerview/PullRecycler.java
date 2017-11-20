@@ -89,6 +89,11 @@ public class PullRecycler extends FrameLayout implements SwipeRefreshLayout.OnRe
                 }
             }
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                refreshLayout.setEnabled(iLayoutmanager.findFirstVisiblePosition() == 0);
+            }
         });
 
     }

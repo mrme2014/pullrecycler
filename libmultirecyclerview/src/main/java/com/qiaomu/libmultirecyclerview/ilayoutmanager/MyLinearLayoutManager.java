@@ -10,6 +10,8 @@ import android.util.AttributeSet;
  * Created by qiaomnu on 17/6/9.
  */
 public class MyLinearLayoutManager extends LinearLayoutManager implements ILayoutManager {
+    boolean mCanScrollVertically = true;
+
     public MyLinearLayoutManager(Context context) {
         super(context);
     }
@@ -58,4 +60,13 @@ public class MyLinearLayoutManager extends LinearLayoutManager implements ILayou
         setStackFromEnd(stackFromEnd);
     }
 
+    @Override
+    public void setCanScrollVertically(boolean canScrollVertically) {
+        mCanScrollVertically = canScrollVertically;
+    }
+
+    @Override
+    public boolean canScrollVertically() {
+        return mCanScrollVertically ? super.canScrollVertically() : false;
+    }
 }

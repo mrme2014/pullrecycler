@@ -2,10 +2,13 @@ package com.qiaomu.libmultirecyclerview.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 
 
@@ -38,15 +41,20 @@ public class DragLinearLayout extends LinearLayout {
 
     private ViewDragHelper mViewDragHelper;
 
-
     private int mMenuLayoutWidth;
     private int mContentLayoutWidth;
 
     private ViewDragListener mViewDragListener;
-
-    private boolean isOpen = false;
     private boolean dragEnable = true;
-    private boolean closeByList;//为了处理列表中点击item  动画关闭  立刻松开手指 又执行onreleaseView的open动作
+    @status
+    private int openStatus = status.CLOSE;
+    private float lastLeft;
+
+    public @interface status {
+        int OPEN = 1;
+        int CLOSE = -1;
+        int FLING = 0;
+    }
 
     public DragLinearLayout(Context context) {
         super(context);
@@ -62,7 +70,6 @@ public class DragLinearLayout extends LinearLayout {
         super(context, attrs, defStyleAttr);
         init();
     }
-
 
     @Override
     protected void onFinishInflate() {
@@ -84,7 +91,7 @@ public class DragLinearLayout extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if (isOpen)
+        if (openStatus == status.OPEN)
             openImmi();
         else
             closeImmi();
@@ -95,11 +102,6 @@ public class DragLinearLayout extends LinearLayout {
      */
     public void setOnViewDragListener(ViewDragListener viewDragListener) {
         this.mViewDragListener = viewDragListener;
-    }
-
-    public void closeByList() {
-        close();
-        closeByList = true;
     }
 
 
@@ -129,30 +131,39 @@ public class DragLinearLayout extends LinearLayout {
     private void init() {
         //创建ViewDragHelper的实例，第一个参数是ViewGroup，传自己，
         // 第二个参数就是滑动灵敏度的意思,可以随意设置，第三个是回调
-        mViewDragHelper = ViewDragHelper.create(this, 1.0f, new DragHelperCallback());
+        mViewDragHelper = ViewDragHelper.create(this, new DragHelperCallback());
+        mViewDragHelper.setCanScrollVertically(true);
     }
 
     class DragHelperCallback extends ViewDragHelper.Callback {
 
         /**
          * 根据返回结果决定当前child是否可以拖拽
+         *
          * @param child     当前被拖拽的view
          * @param pointerId 区分多点触摸的id
          * @return
          */
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return dragEnable;//mContentLayout == child;
+            return dragEnable && mContentLayout == child;
+        }
+
+        @Override
+        public void onViewCaptured(View capturedChild, int activePointerId) {
+            lastLeft = mContentLayout.getLeft();
+            super.onViewCaptured(mContentLayout, activePointerId);
         }
 
         /**
          * 返回拖拽的范围，不对拖拽进行真正的限制，仅仅决定了动画执行速度
+         *
          * @param child
          * @return
          */
         @Override
         public int getViewHorizontalDragRange(View child) {
-            return mContentLayoutWidth;
+            return mMenuLayoutWidth;
         }
 
         @Override
@@ -176,9 +187,8 @@ public class DragLinearLayout extends LinearLayout {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-
             if (null != mViewDragListener) {
-                float percent = Math.abs((float) left / (float) mContentLayoutWidth);
+                float percent = Math.abs((float) left / (float) mMenuLayoutWidth);
                 mViewDragListener.onDrag(percent);
             }
 
@@ -187,22 +197,21 @@ public class DragLinearLayout extends LinearLayout {
             } else {
                 mContentLayout.offsetLeftAndRight(dx);
             }
+
+            judgeOpenStatus();
             invalidate();
         }
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
-            if (releasedChild == mContentLayout) {
-                if (xvel <= 0) {//向左滑动   //
-                    if (!closeByList && releasedChild.getLeft() <= -mMenuLayoutWidth / 3) {
-                        open();
-                    } else {
-                        close();
-                    }
-                } else {//向右滑动
-                    close();
-                }
-            } else close();
+            boolean isScroll = Math.abs(mContentLayout.getLeft() - lastLeft) > mViewDragHelper.getTouchSlop();
+            if (isScroll && xvel == 0 && mContentLayout.getLeft() < -mMenuLayoutWidth * 0.5f) {
+                open();
+            } else if (xvel < 0) {
+                open();
+            } else {
+                close();
+            }
         }
     }
 
@@ -214,8 +223,9 @@ public class DragLinearLayout extends LinearLayout {
 
         if (null != mViewDragListener)
             mViewDragListener.onOpen();
-        isOpen = true;
+
     }
+
 
     /**
      * 打开
@@ -226,7 +236,7 @@ public class DragLinearLayout extends LinearLayout {
         }
         if (null != mViewDragListener)
             mViewDragListener.onOpen();
-        isOpen = true;
+
     }
 
     public void closeImmi() {
@@ -236,8 +246,11 @@ public class DragLinearLayout extends LinearLayout {
 
         if (null != mViewDragListener)
             mViewDragListener.onClose();
-        isOpen = false;
-        closeByList = false;
+
+    }
+
+    public boolean isOpenOrFling() {
+        return openStatus != status.CLOSE;
     }
 
     /**
@@ -249,12 +262,18 @@ public class DragLinearLayout extends LinearLayout {
         }
         if (null != mViewDragListener)
             mViewDragListener.onClose();
-        isOpen = false;
-        closeByList = false;
+
     }
 
-    public boolean isOpen() {
-        return isOpen;
+
+    private void judgeOpenStatus() {
+        if (mContentLayout.getLeft() <= -mMenuLayoutWidth) {
+            openStatus = status.OPEN;
+        } else if (mContentLayout.getLeft() > -mMenuLayoutWidth && mContentLayout.getLeft() < 0) {
+            openStatus = status.FLING;
+        } else if (mContentLayout.getLeft() >= 0) {
+            openStatus = status.CLOSE;
+        }
     }
 
     public void setDragEnable(boolean dragEnable) {
@@ -273,8 +292,14 @@ public class DragLinearLayout extends LinearLayout {
     public boolean onTouchEvent(MotionEvent e) {
         if (!dragEnable)
             return super.onTouchEvent(e);
+
         mViewDragHelper.processTouchEvent(e);
         return true;
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mViewDragHelper.abort();
+    }
 }

@@ -10,7 +10,7 @@ import android.util.AttributeSet;
  * Created by qiaomu on 2017/6/9.
  */
 public class MyGridLayoutManager extends GridLayoutManager implements ILayoutManager {
-
+    boolean mCanScrollVertically = true;
     public MyGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -58,5 +58,15 @@ public class MyGridLayoutManager extends GridLayoutManager implements ILayoutMan
     @Override
     public void setStackFromEndIfPossible(boolean stackFromEnd) {
         setStackFromEnd(stackFromEnd);
+    }
+
+    @Override
+    public void setCanScrollVertically(boolean canScrollVertically) {
+
+        mCanScrollVertically = canScrollVertically;
+    }
+    @Override
+    public boolean canScrollVertically() {
+        return mCanScrollVertically ? super.canScrollVertically() : false;
     }
 }

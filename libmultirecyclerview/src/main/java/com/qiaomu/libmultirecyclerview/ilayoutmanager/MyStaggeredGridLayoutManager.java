@@ -10,7 +10,7 @@ import android.util.AttributeSet;
  * Created by qiaomnu on 17/6/9.
  */
 public class MyStaggeredGridLayoutManager extends StaggeredGridLayoutManager implements ILayoutManager {
-
+    boolean mCanScrollVertically = true;
     public MyStaggeredGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -57,4 +57,13 @@ public class MyStaggeredGridLayoutManager extends StaggeredGridLayoutManager imp
     public void setStackFromEndIfPossible(boolean stackFromEnd) {
     }
 
+    @Override
+    public void setCanScrollVertically(boolean canScrollVertically) {
+
+        mCanScrollVertically = canScrollVertically;
+    }
+    @Override
+    public boolean canScrollVertically() {
+        return mCanScrollVertically ? super.canScrollVertically() : false;
+    }
 }

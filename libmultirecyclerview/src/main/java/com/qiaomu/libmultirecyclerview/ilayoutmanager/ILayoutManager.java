@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
  */
 
 public interface ILayoutManager {
+
     RecyclerView.LayoutManager getLayoutManager();
 
     int findLastVisiblePosition();
@@ -22,4 +23,5 @@ public interface ILayoutManager {
 
     void setStackFromEndIfPossible(boolean stackFromEnd);
 
+    void setCanScrollVertically(boolean canScrollVertically);
 }
