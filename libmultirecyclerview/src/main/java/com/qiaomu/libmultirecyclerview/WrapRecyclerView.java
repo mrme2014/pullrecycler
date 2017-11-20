@@ -3,6 +3,7 @@ package com.qiaomu.libmultirecyclerview;
 import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearSmoothScroller;
@@ -45,7 +46,6 @@ public class WrapRecyclerView extends RecyclerView {
     private boolean mIsRefreshing;
     private int mNewState;
     private Rect mTouchFrame;
-    private View dispatchView;
     private boolean consumeTouchEvent;
 
     public WrapRecyclerView(Context context) {
@@ -99,16 +99,11 @@ public class WrapRecyclerView extends RecyclerView {
                 interceptX = ev.getX();
                 interceptY = ev.getY();
                 iLayoutmanager.setCanScrollVertically(consumeTouchEvent);
-                if (!consumeTouchEvent) {
-                    dispatchView = getChildAt(pointToPosition((int) ev.getX(), (int) ev.getY()));
-                }
-            case MotionEvent.ACTION_UP:
-                consumeTouchEvent = false;
-                dispatchView = null;
+                View dispatchView = getChildAt(pointToPosition((int) ev.getX(), (int) ev.getY()));
+                if (dispatchView != null)
+                    dispatchView.dispatchTouchEvent(ev);
                 break;
-        }
-        if (consumeTouchEvent && dispatchView != null) {
-            dispatchView.dispatchTouchEvent(ev);
+
         }
         return super.dispatchTouchEvent(ev);
     }
