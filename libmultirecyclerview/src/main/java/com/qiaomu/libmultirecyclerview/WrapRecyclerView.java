@@ -97,12 +97,17 @@ public class WrapRecyclerView extends RecyclerView {
             case MotionEvent.ACTION_MOVE:
                 consumeTouchEvent = Math.abs(ev.getY() - interceptY) > Math.abs(ev.getX() - interceptX);
                 interceptX = ev.getX();
+
                 interceptY = ev.getY();
                 iLayoutmanager.setCanScrollVertically(consumeTouchEvent);
                 View dispatchView = getChildAt(pointToPosition((int) ev.getX(), (int) ev.getY()));
-                if (dispatchView != null)
+                if (dispatchView != null) {
                     dispatchView.dispatchTouchEvent(ev);
+                    Log.e("dispatchTouchEvent: ", "dispatchTouchEvent");
+                }
+
                 break;
+
 
         }
         return super.dispatchTouchEvent(ev);
@@ -250,13 +255,14 @@ public class WrapRecyclerView extends RecyclerView {
         return loadMoreView;
     }
 
-    public void setOnLoadCompleted() {
+    public void refreshCompleted() {
         if (mAdapter == null)
             return;
         if (isLoadingMore) {
             isLoadingMore = false;
             if (loadMoreEnable) {
-                mWrapRecyclerAdapter.notifyItemRemoved(mWrapRecyclerAdapter.getItemCount() - 1);
+                mWrapRecyclerAdapter.notifyDataSetChanged();
+                //mWrapRecyclerAdapter.notifyItemRemoved(mWrapRecyclerAdapter.getItemCount() - 1);
             } else {
                 // mWrapRecyclerAdapter.notifyItemRemoved(mWrapRecyclerAdapter.getItemCount() - 1);
                 mWrapRecyclerAdapter.notifyDataSetChanged();

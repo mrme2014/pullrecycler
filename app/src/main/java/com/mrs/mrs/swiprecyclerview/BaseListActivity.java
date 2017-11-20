@@ -192,7 +192,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
             //加载更多
            // mPullRecycler.setEnableLoadMore(false);
         }
-        mPullRecycler.setOnRefreshCompeleted();
+        mPullRecycler.refreshCompleted();
         mPullRecycler.showLoadOverView();
     }
 
@@ -227,7 +227,7 @@ public abstract class BaseListActivity<T> extends AppCompatActivity implements o
                 mPullRecycler.setEnableLoadMore(true);
             }
         }
-        mPullRecycler.setOnRefreshCompeleted();
+        mPullRecycler.refreshCompleted();
     }
 
 

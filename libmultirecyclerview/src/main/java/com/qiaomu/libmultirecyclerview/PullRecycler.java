@@ -145,12 +145,12 @@ public class PullRecycler extends FrameLayout implements SwipeRefreshLayout.OnRe
         recyclerView.setAdapter(adapter);
     }
 
-    public void setOnRefreshCompeleted() {
+    public void refreshCompleted() {
         if (isRefreshing()) {
             refreshLayout.setRefreshing(false);
             recyclerView.setRefreshing(false);
         }
-        recyclerView.setOnLoadCompleted();
+        recyclerView.refreshCompleted();
     }
 
 
