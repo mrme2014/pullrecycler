@@ -78,27 +78,6 @@ public class WrapRecyclerView extends RecyclerView {
         this.enableSwipDimiss = enableSwipDimiss;
     }
 
-    float x, y;
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                x = ev.getX();
-                y = ev.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                Log.e("dispatchTouchEvent: ", Math.abs(ev.getX() - x) + "--" + Math.abs(ev.getY() - y));
-                if (Math.abs(ev.getX() - x) > Math.abs(ev.getY() - y)) {
-                    stopScroll();
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-        }
-
-
-        return  super.dispatchTouchEvent(ev);
-    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
