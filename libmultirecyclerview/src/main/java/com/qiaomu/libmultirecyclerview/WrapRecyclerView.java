@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,7 +34,7 @@ public class WrapRecyclerView extends RecyclerView {
     private onRefreshListener listener;
     private View loadOverView;
     private View loadMoreView;
-    private boolean enableSwipDimiss;//是否支持配合DragLinearLayout实现侧滑删除
+    private boolean enableSwipeDismiss;//是否支持配合DragLinearLayout实现侧滑删除
     private LookSpanSize lookSpan;
     private ILayoutManager iLayoutmanager;
     private float MILLISECONDS_PER_INCH = getResources().getDisplayMetrics().density * 0.3f;
@@ -74,14 +73,14 @@ public class WrapRecyclerView extends RecyclerView {
     }
 
     /*设置支持 侧滑删除 否则不会自动关闭打开的条目*/
-    public void setSupportSwipDiMiss(boolean enableSwipDimiss) {
-        this.enableSwipDimiss = enableSwipDimiss;
+    public void enableSwipeDismiss(boolean enableSwipeDismiss) {
+        this.enableSwipeDismiss = enableSwipeDismiss;
     }
 
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!enableSwipDimiss)
+        if (!enableSwipeDismiss)
             return super.onInterceptTouchEvent(ev);
 
         boolean intercept;

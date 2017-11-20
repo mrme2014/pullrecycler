@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +29,7 @@ public class PullRecylerListActivity extends BaseListActivity<PullRecylerListAct
         ((TextView) header).setText("这里是第二个Header....");
         addHeaderView(header);
         //支持侧滑自动关闭已打开的
-        mPullRecycler.getRecyclerView().setSupportSwipDiMiss(true);
+        mPullRecycler.getRecyclerView().enableSwipeDismiss(true);
     }
 
 
